@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.forms import  UserCreationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -8,6 +8,7 @@ def home(request):
     return render(request, 'home.html')
 
 def signup(request):
+
 
     if request.method == 'GET':
         return render(request, 'signup.html',{
@@ -19,14 +20,16 @@ def signup(request):
                 #Registrar Usuario
                 user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
                 user.save()
-                return HttpResponse('Usuario creado satisfactoriamente')
+                return redirect('task')
             except:
                 return render(request, 'signup.html', {
                     'form' : UserCreationForm,
                     'err' : 'El usuario ya existe'
                 })
-        return HttpResponse('Las contraseñas no coinciden')
+        return render(request, 'signup.html', {
+                    'form' : UserCreationForm,
+                    'error' : 'La contraseña no coincide'
+                }) 
 
-    return render(request, 'signup.html',{
-        'form' : UserCreationForm
-    })
+def task(request):
+    return render(request, 'task.html')
